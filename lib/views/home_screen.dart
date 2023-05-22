@@ -1,10 +1,15 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hackrnews/services/api_service.dart';
 import 'package:hackrnews/utils/dimension.dart';
+import 'package:hackrnews/views/view_news_screen.dart';
 import 'package:hackrnews/views/widgets/category_item.dart';
-import 'package:hackrnews/views/widgets/discover_card.dart';
+import 'package:hackrnews/views/widgets/top_news_card.dart';
 import 'package:hackrnews/views/widgets/recommended_item.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,6 +19,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -28,14 +38,13 @@ class _HomeScreenState extends State<HomeScreen> {
       ],
       'title': [
         'All',
-        'Educational',
+        'StartUps',
         'Security',
-        'AI',
+        'Artifical Intelligence',
         'Android news',
       ],
     };
 
-    final List<bool> selectedIndex = List.filled(7, false);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -51,25 +60,40 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Icon(
             Icons.menu,
             color: Colors.black,
-            size: getProportionateMobileHeight(25),
+            size: getProportionateMobileHeight(22),
           ),
         ),
         actions: [
-          Icon(
-            Icons.search,
-            color: Colors.black,
-            size: getProportionateMobileHeight(22),
-          ),
-          SizedBox(
-            width: getProportionateMobileHeight(20),
-          ),
-          Icon(
-            Icons.notifications_none_rounded,
-            color: Colors.black,
-            size: getProportionateMobileHeight(22),
-          ),
-          SizedBox(
-            width: getProportionateMobileHeight(15),
+          Container(
+            width: getProportionateMobileHeight(90),
+            decoration: BoxDecoration(
+              color: Colors.grey[200],
+              borderRadius: BorderRadius.circular(
+                getProportionateMobileHeight(20),
+              ),
+            ),
+            margin: EdgeInsets.only(right: getProportionateMobileHeight(15)),
+            padding: EdgeInsets.symmetric(
+              horizontal: getProportionateMobileHeight(10),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Icon(
+                  Icons.search,
+                  color: Colors.black,
+                  size: getProportionateMobileHeight(22),
+                ),
+                SizedBox(
+                  width: getProportionateMobileHeight(20),
+                ),
+                Icon(
+                  Icons.notifications_none_rounded,
+                  color: Colors.black,
+                  size: getProportionateMobileHeight(22),
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -85,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 text: TextSpan(
                   children: [
                     TextSpan(
-                      text: 'Discover ',
+                      text: 'Top News ',
                       style: GoogleFonts.aBeeZee(
                         fontSize: getProportionateMobileHeight(28),
                         color: Colors.black,
@@ -105,43 +129,61 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               SizedBox(
                 height: getProportionateMobileHeight(180),
-                child: ListView.separated(
-                  shrinkWrap: true,
-                  itemCount: 5,
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, index) => Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Positioned(
-                        child: Stack(
-                          children: [
-                            const DiscoverCard(),
-                            Positioned(
-                              left: getProportionateMobileHeight(10),
-                              bottom: 10,
-                              child: SizedBox(
-                                width: getProportionateMobileHeight(260),
-                                child: Text(
-                                  'Sport',
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 2,
-                                  style: GoogleFonts.poppins(
-                                    color: Colors.white,
-                                    fontSize: getProportionateMobileHeight(14),
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
+                child: Consumer<APIService>(
+                  builder: (context, controller, _) {
+                    return SizedBox(
+                      height: getProportionateMobileHeight(180),
+                      child: FutureBuilder<List>(
+                        future: controller.fetchTopNews(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            final data = snapshot.data!;
+                            return ListView.separated(
+                              shrinkWrap: true,
+                              itemCount: data.length,
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) {
+                                return Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Stack(
+                                      children: [
+                                        InkWell(
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              CupertinoPageRoute(
+                                                builder: (context) =>
+                                                    ViewNewsScreen(
+                                                  itemID: data[index]['id']
+                                                      .toString(),
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                          child: TopNewsCard(
+                                            topNewsHeadline:
+                                                data[index]['title'].toString(),
+                                            topNewsAuthor:
+                                                data[index]['by'].toString(),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                );
+                              },
+                              separatorBuilder: (context, index) => SizedBox(
+                                width: getProportionateMobileHeight(15),
                               ),
-                            )
-                          ],
-                        ),
+                            );
+                          }
+                          return const TopNewsLoader();
+                        },
                       ),
-                    ],
-                  ),
-                  separatorBuilder: (context, index) => SizedBox(
-                    width: getProportionateMobileHeight(15),
-                  ),
+                    );
+                  },
                 ),
               ),
               VerticalSpacingMobile(
@@ -154,11 +196,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   itemCount: categoryData['icon']!.length,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, index) => InkWell(
-                    onTap: () {
-                      setState(() {
-                        selectedIndex[index] = !selectedIndex[index];
-                      });
-                    },
+                    onTap: () {},
                     child: CategoryItem(
                       icon: categoryData['icon']![index],
                       title: categoryData['title']![index],
@@ -180,19 +218,73 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               VerticalSpacingMobile(
-                heightValue: getProportionateMobileHeight(15),
+                heightValue: getProportionateMobileHeight(5),
               ),
-              ListView.separated(
-                shrinkWrap: true,
-                itemCount: 5,
-                itemBuilder: (context, index) => const RecommededItem(),
-                separatorBuilder: (context, index) => VerticalSpacingMobile(
-                  heightValue: getProportionateMobileHeight(10),
-                ),
+              Consumer<APIService>(
+                builder: (context, controller, _) {
+                  return FutureBuilder<List>(
+                    future: controller.fetchForYouNews(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        final data = snapshot.data!;
+                        return ListView.separated(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: data.length,
+                          itemBuilder: (context, index) {
+                            DateTime dateTime =
+                                DateTime.fromMillisecondsSinceEpoch(
+                                    data[index]['time'] * 1000);
+
+                            //  the desired date format
+                            DateFormat formatter = DateFormat('MMM dd, yyyy');
+                            String formattedDate = formatter.format(dateTime);
+
+                            return InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  CupertinoPageRoute(
+                                    builder: (context) => ViewNewsScreen(
+                                      itemID: data[index]['id'].toString(),
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: RecommededItem(
+                                recommendedNewsHeadline:
+                                    data[index]['title'].toString(),
+                                recommendedNewsAuthor:
+                                    data[index]['by'].toString(),
+                                postTime: formattedDate,
+                              ),
+                            );
+                          },
+                          separatorBuilder: (context, index) =>
+                              VerticalSpacingMobile(
+                            heightValue: getProportionateMobileHeight(10),
+                          ),
+                        );
+                      }
+                      return SizedBox(
+                        height: getProportionateMobileHeight(250),
+                        child: Center(
+                          child: SizedBox(
+                            width: getProportionateMobileHeight(30),
+                            height: getProportionateMobileHeight(30),
+                            child: const CircularProgressIndicator(
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
               ),
               VerticalSpacingMobile(
                 heightValue: getProportionateMobileHeight(40),
-              )
+              ),
             ],
           ),
         ),
