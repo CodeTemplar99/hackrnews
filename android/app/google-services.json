@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "323006546017",
+    "project_id": "hackrnews-57adf",
+    "storage_bucket": "hackrnews-57adf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:323006546017:android:625dcb9b78dd739522ea20",
+        "android_client_info": {
+          "package_name": "com.example.hackrnews"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "323006546017-pmlvqkhi8oh5b0d6oapqgpufdmug3fce.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0gU-x7nHPU781DKpSTE4rabDH2GWQxtM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "323006546017-pmlvqkhi8oh5b0d6oapqgpufdmug3fce.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

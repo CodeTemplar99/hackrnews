@@ -82,7 +82,7 @@ class FloatingToolBar extends StatelessWidget {
             width: getProportionateMobileHeight(50),
             height: getProportionateMobileHeight(50),
             decoration: BoxDecoration(
-              color: Colors.blue,
+              color: const Color(0xFF0658E6),
               borderRadius:
                   BorderRadius.circular(getProportionateMobileHeight(50)),
             ),
