@@ -1,6 +1,6 @@
 # HackrNews App
 
-This is a Flutter application that allows users to consume news from hacker news' endpoint ![View here](https://github.com/HackerNews/API). It provides two main views: a list of news articles and a detailed view for each article. The app is deployed using Firebase Distribution, allowing for easy distribution and testing.
+This is a Flutter application that allows users to consume news from hacker news' endpoint [View here](https://github.com/HackerNews/API). It provides two main views: a list of news articles and a detailed view for each article. The app is deployed using Firebase Distribution, allowing for easy distribution and testing.
 
 ## Features
 
