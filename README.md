@@ -11,7 +11,7 @@ This is a Flutter application that allows users to consume news from hacker news
 
 ## Screenshots
 
-<img src="[path/to/image.jpg](https://github.com/CodeTemplar99/hackrnews/assets/36797498/6b089b87-686d-42ae-b508-3a356b0f1899)" alt="Image description" width="300" />
+<img src="https://github.com/CodeTemplar99/hackrnews/assets/36797498/6b089b87-686d-42ae-b508-3a356b0f1899" alt="Image description" width="300" />
 <!-- ![Home screen]() -->
 
 <!-- ![View news screen](https://github.com/CodeTemplar99/hackrnews/assets/36797498/1284e56d-48da-44f7-8b49-2cce0036e64f) -->
